@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>232F8D2A-104C-45C2-8697-51A3FD4F2A26</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>800A081C34D35657077D2C4C40DC8BF9DD4B671A</key>
+		<string>https://github.com/ahimahas/MSFloatingViewManager</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>MSFloatingViewManager/MSFloatingViewManager.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>800A081C34D35657077D2C4C40DC8BF9DD4B671A</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/ahimahas/MSFloatingViewManager</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>800A081C34D35657077D2C4C40DC8BF9DD4B671A</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>800A081C34D35657077D2C4C40DC8BF9DD4B671A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>MSFloatingViewManager</string>
+		</dict>
+	</array>
+</dict>
+</plist>
