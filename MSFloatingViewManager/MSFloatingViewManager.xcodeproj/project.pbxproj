@@ -15,7 +15,6 @@
 		583D834E1B5DD81900D9CB01 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 583D834C1B5DD81900D9CB01 /* LaunchScreen.xib */; };
 		583D835A1B5DD81900D9CB01 /* MSFloatingViewManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 583D83591B5DD81900D9CB01 /* MSFloatingViewManagerTests.m */; };
 		583D83681B5DE18600D9CB01 /* MSFloatingViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 583D83651B5DE18600D9CB01 /* MSFloatingViewManager.m */; };
-		583D83691B5DE18600D9CB01 /* MSFloatingViewManagerCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 583D83671B5DE18600D9CB01 /* MSFloatingViewManagerCore.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,8 +43,6 @@
 		583D83591B5DD81900D9CB01 /* MSFloatingViewManagerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MSFloatingViewManagerTests.m; sourceTree = "<group>"; };
 		583D83641B5DE18600D9CB01 /* MSFloatingViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSFloatingViewManager.h; sourceTree = "<group>"; };
 		583D83651B5DE18600D9CB01 /* MSFloatingViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSFloatingViewManager.m; sourceTree = "<group>"; };
-		583D83661B5DE18600D9CB01 /* MSFloatingViewManagerCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSFloatingViewManagerCore.h; sourceTree = "<group>"; };
-		583D83671B5DE18600D9CB01 /* MSFloatingViewManagerCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSFloatingViewManagerCore.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,8 +128,6 @@
 			children = (
 				583D83641B5DE18600D9CB01 /* MSFloatingViewManager.h */,
 				583D83651B5DE18600D9CB01 /* MSFloatingViewManager.m */,
-				583D83661B5DE18600D9CB01 /* MSFloatingViewManagerCore.h */,
-				583D83671B5DE18600D9CB01 /* MSFloatingViewManagerCore.m */,
 			);
 			path = FloatingViewManager;
 			sourceTree = "<group>";
@@ -240,7 +235,6 @@
 				583D83681B5DE18600D9CB01 /* MSFloatingViewManager.m in Sources */,
 				583D83461B5DD81900D9CB01 /* ViewController.m in Sources */,
 				583D83431B5DD81900D9CB01 /* AppDelegate.m in Sources */,
-				583D83691B5DE18600D9CB01 /* MSFloatingViewManagerCore.m in Sources */,
 				583D83401B5DD81900D9CB01 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -438,6 +432,7 @@
 				583D835F1B5DD81900D9CB01 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		583D83601B5DD81900D9CB01 /* Build configuration list for PBXNativeTarget "MSFloatingViewManagerTests" */ = {
 			isa = XCConfigurationList;
@@ -446,6 +441,7 @@
 				583D83621B5DD81900D9CB01 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

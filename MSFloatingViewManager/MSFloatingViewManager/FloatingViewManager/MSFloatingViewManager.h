@@ -11,8 +11,12 @@
 
 @property (nonatomic) CGFloat floatingDistance;     // Default: headerView height
 
-- (id)initWithCallingObject:(id)callingObject
-                 scrollView:(UIScrollView *)scrollView
-                 headerView:(UIView *)headerView;
+/**
+ *  Parameters
+ *      - callingObject : object that calls floatingViewManager
+ *      - scrollView    : 
+ *      - headerView    : floated view by scrollView's movement
+ */
+- (id)initWithCallingObject:(id)callingObject scrollView:(UIScrollView *)scrollView headerView:(UIView *)headerView;
 
 @end

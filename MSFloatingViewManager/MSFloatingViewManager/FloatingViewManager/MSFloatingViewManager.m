@@ -6,7 +6,6 @@
 //
 
 #import "MSFloatingViewManager.h"
-#import "MSFloatingViewManagerCore.h"
 #import <objc/runtime.h>
 
 #define FLOATING_VIEW_DICTIONARY_KEY_SWIZZLING_KEY  @"swizzlingKey"
@@ -17,6 +16,292 @@
 #define FLOATING_VIEW_DID_END_DRAGGING_IMP_KEY      @"floatingViewDidEndDraggingImpKey"
 #define FLOATING_VIEW_DID_END_DECELERATING_IMP_KEY  @"floatingViewDidEndDeceleratingImpKey"
 
+
+
+// ######################################################################################################################## //
+// #################################################   Inner Class   ###################################################### //
+// ######################################################################################################################## //
+
+#define UNDEFINED_OFFSET    CGPointMake(CGFLOAT_MAX, CGFLOAT_MAX)
+
+
+typedef NS_ENUM(NSInteger, MSFloatingViewManagerFloatingOption) {
+    MSFloatingViewManagerFloatingOptionNone     = 0,
+    MSFloatingViewManagerFloatingOptionHeader   = 1,
+};
+
+typedef NS_ENUM(NSInteger, MSFloatingViewManagerDynamicResizableViewOption) {
+    MSFloatingViewManagerDynamicViewResizeOptionNone     = 0,
+    MSFloatingViewManagerDynamicViewResizeOptionHeader   = 1,
+};
+
+
+@interface MSFloatingViewManagerCore : NSObject
+
+@property (nonatomic) MSFloatingViewManagerFloatingOption floatingOption;                           // Default: header.
+@property (nonatomic) MSFloatingViewManagerDynamicResizableViewOption dynamicResizableViewOption;   // Default: header.
+@property (nonatomic, strong) UIView *dynamicResizableView;                                         // Default: scrollView.
+
+@property (nonatomic) CGFloat floatingDistance;                                 // Default: headerView height.
+@property (nonatomic) CGFloat distanceAtTheTopOfScrollWhenHeaderViewHidden;     // Default: floatingDistance
+
+@property (nonatomic) BOOL floatingViewAnimation;                           // Default: YES
+@property (nonatomic) BOOL floatingViewAnimationOnlyTopOfScrollView;        // Default: NO
+@property (nonatomic) BOOL alphaEffectWhenHidding;                          // Default: NO
+
+@property (nonatomic) CGRect originHeaderViewFrame;                         // Default: headerView's frame
+@property (nonatomic) CGRect originDynamicResizableViewFrame;               // Default: dynamicResizableView's frame
+
+@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UIView *headerView;
+@property (nonatomic, assign) CGPoint lastContentOffset;
+@property (nonatomic) BOOL isScrollViewJustBeingDragging;
+
+@property (nonatomic, strong) NSString *callingObjectAddress;
+@property (nonatomic, strong) NSString *swizzlingKey;
+
+#pragma mark - Initialize Methods
+- (id)initForScrollView:(UIScrollView *)scrollView headerView:(UIView *)headerView;
+
+@end
+
+
+@implementation MSFloatingViewManagerCore
+
+
+#pragma mark - Initialize Methods
+
+- (id)initForScrollView:(UIScrollView *)scrollView headerView:(UIView *)headerView
+{
+    self = [super init];
+    if (self) {
+        _scrollView = scrollView;
+        
+        _dynamicResizableView = _scrollView;
+        _originDynamicResizableViewFrame = _dynamicResizableView.frame;
+        _dynamicResizableViewOption = MSFloatingViewManagerDynamicViewResizeOptionHeader;
+        
+        CGFloat headerViewHeight = 0.f;
+        _headerView = headerView;
+        if (_headerView != nil) {
+            _originHeaderViewFrame = _headerView.frame;
+            headerViewHeight = _headerView.frame.size.height;
+        }
+        
+        _floatingDistance = headerViewHeight;
+        _distanceAtTheTopOfScrollWhenHeaderViewHidden = _floatingDistance;
+        
+        _floatingOption = MSFloatingViewManagerFloatingOptionHeader;
+        
+        _lastContentOffset = UNDEFINED_OFFSET;
+        
+        _floatingViewAnimation = YES;
+        _floatingViewAnimationOnlyTopOfScrollView = NO;
+        _alphaEffectWhenHidding = NO;
+        _isScrollViewJustBeingDragging = NO;
+    }
+    
+    return self;
+}
+
+
+#pragma mark - Private Methods Methods
+
+- (void)moveFloatingViewsToFit
+{
+    if (_floatingOption == MSFloatingViewManagerFloatingOptionNone) {
+        return;
+    }
+    
+    if (!_floatingViewAnimation) {
+        return;
+    }
+    
+    CGFloat gapBetweenOriginAndCurrentHeaderViewFrame = fabs(_originHeaderViewFrame.origin.y - _headerView.frame.origin.y);
+    // move to hide
+    if ((gapBetweenOriginAndCurrentHeaderViewFrame > _floatingDistance / 2) && ![self isHeaderViewStatusHide]) {
+        [self hideFloatings:YES];
+    }
+    
+    // move to show
+    else if ((gapBetweenOriginAndCurrentHeaderViewFrame <= _floatingDistance / 2) && ![self isHeaderViewStatusShow]) {
+        [self showFloatings:YES];
+    }
+}
+
+
+- (void)showFloatings:(BOOL)animated
+{
+    CGFloat gapBetweenOriginAndCurrentHeaderViewFrame = fabs(_originHeaderViewFrame.origin.y - _headerView.frame.origin.y);
+    CGFloat yPoint = MAX(_scrollView.contentOffset.y - gapBetweenOriginAndCurrentHeaderViewFrame, 0);
+    [_scrollView setContentOffset:CGPointMake(0, yPoint) animated:animated];
+}
+
+
+- (void)hideFloatings:(BOOL)animated
+{
+    CGFloat gapBetweenOriginAndCurrentHeaderViewFrame = fabs(_originHeaderViewFrame.origin.y - _headerView.frame.origin.y);
+    [_scrollView setContentOffset:CGPointMake(0, _scrollView.contentOffset.y + (_floatingDistance - gapBetweenOriginAndCurrentHeaderViewFrame)) animated:animated];
+}
+
+
+- (void)moveFloatingHeaderViewRelativelyFromPoint:(CGPoint)fromPoint toPoint:(CGPoint)toPoint
+{
+    CGFloat delta = toPoint.y - fromPoint.y;
+    
+    CGRect headerFrame = _headerView.frame;
+    CGFloat beforeHeaderViewOriginY = _headerView.frame.origin.y;
+    CGFloat afterHeaderViewOriginY = MIN(MAX(headerFrame.origin.y - delta, CGRectGetMinY(_originHeaderViewFrame) - _floatingDistance), CGRectGetMinY(_originHeaderViewFrame));
+    if (beforeHeaderViewOriginY == afterHeaderViewOriginY) {
+        return;
+    }
+    
+    headerFrame.origin.y = afterHeaderViewOriginY;
+    [_headerView setFrame:headerFrame];
+    
+    if (_alphaEffectWhenHidding) {
+        CGFloat alpha =  1 - (fabs(headerFrame.origin.y - CGRectGetMinY(_originHeaderViewFrame)) / _floatingDistance);
+        [_headerView setAlpha:alpha];
+    }
+    
+    // resize scrollView
+    [self resizeDynamicResizableViewWithBeforeHeaderViewOriginY:beforeHeaderViewOriginY afterHeaderViewOriginY:afterHeaderViewOriginY];
+}
+
+- (void)resizeDynamicResizableViewWithBeforeHeaderViewOriginY:(CGFloat)beforeHeaderViewOriginY afterHeaderViewOriginY:(CGFloat)afterHeaderViewOriginY
+{
+    CGFloat headerViewMovedDelta = beforeHeaderViewOriginY - afterHeaderViewOriginY;
+    CGRect viewRect = _dynamicResizableView.frame;
+    viewRect.origin.y -= headerViewMovedDelta;
+    viewRect.size.height += headerViewMovedDelta;
+    
+    [_dynamicResizableView setFrame:viewRect];
+}
+
+- (BOOL)isHeaderViewStatusHide
+{
+    return _originHeaderViewFrame.origin.y - _floatingDistance == _headerView.frame.origin.y;
+}
+
+- (BOOL)isHeaderViewStatusShow
+{
+    return _originHeaderViewFrame.origin.y == _headerView.frame.origin.y;
+}
+
+
+#pragma mark - Scroll Event Handle Methods
+
+- (void)scrollViewDidScroll
+{
+    // if floatingOption is none, return
+    if (_floatingOption == MSFloatingViewManagerFloatingOptionNone) {
+        return;
+    }
+    
+    // if lastConentOffset is equals to current one, return
+    if (_scrollView.contentOffset.y == _lastContentOffset.y) {
+        return;
+    }
+    
+    // if scrollView's height is less then actual floating distance, return
+    if (_floatingDistance + _originDynamicResizableViewFrame.size.height >= _scrollView.contentSize.height) {
+        return;
+    }
+    
+    CGPoint offset = _lastContentOffset;
+    _lastContentOffset = _scrollView.contentOffset;
+    
+    // if lastContentOffset is UNDEFINE, return
+    if (CGPointEqualToPoint(offset, UNDEFINED_OFFSET)) {
+        return;
+    }
+    
+    // if floatingViewAnimation turned off, return
+    if (!_floatingViewAnimation) {
+        return;
+    }
+    
+    // ignore bouncing at the bottom at the bottom of scrollView
+    CGFloat value = _scrollView.contentSize.height - _scrollView.bounds.size.height - _scrollView.contentOffset.y;
+    if (value <= 0) {
+        return;
+    }
+    
+    // ignore bouncing at the top of scrollView
+    if (_headerView.frame.origin.y >= 0 && _scrollView.contentOffset.y <= 0) {
+        return;
+    }
+    
+    // ignore scrolling event when floatingViewAnimationOnlyTopOfScrollView is setted
+    if (_floatingViewAnimationOnlyTopOfScrollView && (_lastContentOffset.y > _headerView.frame.size.height) &&
+        _headerView.frame.origin.y <= _originHeaderViewFrame.origin.y - _floatingDistance) {
+        return;
+    }
+    
+    // ignore scrolling event when scrollViewContentOffset is not enough to hide headerView
+    BOOL isScrollViewContentOffsetSizeBigEnough = CGRectGetHeight(_scrollView.frame) + _distanceAtTheTopOfScrollWhenHeaderViewHidden <= _scrollView.contentSize.height;
+    if (!isScrollViewContentOffsetSizeBigEnough) {
+        return;
+    }
+    
+    // scrollViewContentOffset reset when headerView hidden and scrollingDown from the top
+    if (_isScrollViewJustBeingDragging) {
+        _isScrollViewJustBeingDragging = NO;
+        
+        BOOL isScrollingDown = (offset.y != UNDEFINED_OFFSET.y && _lastContentOffset.y - offset.y <= 0);
+        BOOL isScrollViewOffsetInResetBoundary = _lastContentOffset.y < _distanceAtTheTopOfScrollWhenHeaderViewHidden;
+        if ([self isHeaderViewStatusHide] && isScrollingDown && isScrollViewOffsetInResetBoundary) {
+            [_scrollView setContentOffset:CGPointMake(0, _distanceAtTheTopOfScrollWhenHeaderViewHidden) animated:NO];
+            _lastContentOffset = CGPointMake(0, _distanceAtTheTopOfScrollWhenHeaderViewHidden);
+        }
+        return;
+    }
+    
+    // move headerView
+    if (_floatingOption == MSFloatingViewManagerFloatingOptionHeader) {
+        [self moveFloatingHeaderViewRelativelyFromPoint:offset toPoint:_scrollView.contentOffset];
+    }
+}
+
+
+- (void)scrollViewWillBeginDragging
+{
+    _isScrollViewJustBeingDragging = YES;
+}
+
+- (void)scrollViewDidEndDraggingWithWillDecelerate:(BOOL)decelerate
+{
+    if (!decelerate) {
+        [self moveFloatingViewsToFit];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating
+{
+    [self moveFloatingViewsToFit];
+}
+
+
+#pragma mark - Setty, Getty Methods
+
+- (void)setFloatingOption:(MSFloatingViewManagerFloatingOption)floatingOption
+{
+    _floatingOption = floatingOption;
+}
+
+- (void)setDynamicResizableView:(UIView *)dynamicResizableView
+{
+    _dynamicResizableView = dynamicResizableView;
+    _originDynamicResizableViewFrame = _dynamicResizableView.frame;
+}
+
+@end
+
+
+
+
+
+// ######################################################################################################################## //
 
 /**
  *  Data Structure <callingObjectDictionary>
@@ -37,8 +322,6 @@ static NSMutableDictionary *callingObjectDictionary;
  *  }
  */
 static NSMutableDictionary *swizzlingKeyDictionary;
-
-
 
 @interface MSFloatingViewManager()
 
