@@ -14,6 +14,8 @@
 		583D834B1B5DD81900D9CB01 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 583D834A1B5DD81900D9CB01 /* Images.xcassets */; };
 		583D834E1B5DD81900D9CB01 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 583D834C1B5DD81900D9CB01 /* LaunchScreen.xib */; };
 		583D835A1B5DD81900D9CB01 /* MSFloatingViewManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 583D83591B5DD81900D9CB01 /* MSFloatingViewManagerTests.m */; };
+		583D83681B5DE18600D9CB01 /* MSFloatingViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 583D83651B5DE18600D9CB01 /* MSFloatingViewManager.m */; };
+		583D83691B5DE18600D9CB01 /* MSFloatingViewManagerCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 583D83671B5DE18600D9CB01 /* MSFloatingViewManagerCore.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +42,10 @@
 		583D83531B5DD81900D9CB01 /* MSFloatingViewManagerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MSFloatingViewManagerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		583D83581B5DD81900D9CB01 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		583D83591B5DD81900D9CB01 /* MSFloatingViewManagerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MSFloatingViewManagerTests.m; sourceTree = "<group>"; };
+		583D83641B5DE18600D9CB01 /* MSFloatingViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSFloatingViewManager.h; sourceTree = "<group>"; };
+		583D83651B5DE18600D9CB01 /* MSFloatingViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSFloatingViewManager.m; sourceTree = "<group>"; };
+		583D83661B5DE18600D9CB01 /* MSFloatingViewManagerCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSFloatingViewManagerCore.h; sourceTree = "<group>"; };
+		583D83671B5DE18600D9CB01 /* MSFloatingViewManagerCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSFloatingViewManagerCore.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +87,7 @@
 		583D833C1B5DD81900D9CB01 /* MSFloatingViewManager */ = {
 			isa = PBXGroup;
 			children = (
+				583D83631B5DE16B00D9CB01 /* FloatingViewManager */,
 				583D83411B5DD81900D9CB01 /* AppDelegate.h */,
 				583D83421B5DD81900D9CB01 /* AppDelegate.m */,
 				583D83441B5DD81900D9CB01 /* ViewController.h */,
@@ -117,6 +124,17 @@
 				583D83581B5DD81900D9CB01 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		583D83631B5DE16B00D9CB01 /* FloatingViewManager */ = {
+			isa = PBXGroup;
+			children = (
+				583D83641B5DE18600D9CB01 /* MSFloatingViewManager.h */,
+				583D83651B5DE18600D9CB01 /* MSFloatingViewManager.m */,
+				583D83661B5DE18600D9CB01 /* MSFloatingViewManagerCore.h */,
+				583D83671B5DE18600D9CB01 /* MSFloatingViewManagerCore.m */,
+			);
+			path = FloatingViewManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -219,8 +237,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				583D83681B5DE18600D9CB01 /* MSFloatingViewManager.m in Sources */,
 				583D83461B5DD81900D9CB01 /* ViewController.m in Sources */,
 				583D83431B5DD81900D9CB01 /* AppDelegate.m in Sources */,
+				583D83691B5DE18600D9CB01 /* MSFloatingViewManagerCore.m in Sources */,
 				583D83401B5DD81900D9CB01 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
