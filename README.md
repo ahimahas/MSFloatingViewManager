@@ -22,4 +22,5 @@ There are 3 options.
 
 3. alphaEffectWhenHidding
 
+![](https://github.com/ahimahas/MSFloatingViewManager/blob/master/Images/halfDistance.gif?raw=true)
 ![](https://i.imgflip.com/og53f.jpg)
