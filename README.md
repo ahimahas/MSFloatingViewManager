@@ -19,7 +19,12 @@ The only thing your need is initialize MSFloatingViewManager and that's all.
 # Options
 There are 3 options.
 
-1. floatingDistance<br>
+1. floatingDistance
+You can set move distance of floating view (which is headerView). Default value is headerView's height.
+For example, if you set this value like below, headerView move only half distance of it's height.
+```
+  [_floatingViewManager setFloatingDistance:CGRectGetHeight(_headerView.frame) / 2];
+```
 
 2. enableFloatingViewAnimation
 
