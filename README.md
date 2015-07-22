@@ -21,3 +21,5 @@ There are 3 options.
 2. enableFloatingViewAnimation
 
 3. alphaEffectWhenHidding
+
+![](https://i.imgflip.com/og53f.jpg)
