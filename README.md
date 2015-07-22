@@ -24,12 +24,10 @@ You can set move distance of floating view (which is headerView). Default value 
 For example, if you set this value like below, headerView move only half distance of it's height.
 ```
   [_floatingViewManager setFloatingDistance:CGRectGetHeight(_headerView.frame) / 2];
-```
-
+```<br>
 2. enableFloatingViewAnimation<br>
 You can control floatingView action with this value. Default value is YES.
-If you set this value as NO, floating animation doesn't work.
-
+If you set this value as NO, floating animation doesn't work.<br>
 3. alphaEffectWhenHidding<br>
 You can give alpha effect to headerView and its' all subviews. Default Value is NO.
 
