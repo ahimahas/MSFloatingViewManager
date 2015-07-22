@@ -27,6 +27,8 @@
     
     // setup FloatingViewManager
     _floatingViewManager = [[MSFloatingViewManager alloc] initWithCallingObject:self scrollView:_tableView headerView:_headerView];
+    _floatingViewManager.enableFloatingViewAnimation = YES;
+    _floatingViewManager.alphaEffectWhenHidding = YES;
 }
 
 - (void)didReceiveMemoryWarning {

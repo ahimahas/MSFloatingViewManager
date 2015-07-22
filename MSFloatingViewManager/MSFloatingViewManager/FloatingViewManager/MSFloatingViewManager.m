@@ -45,7 +45,7 @@ typedef NS_ENUM(NSInteger, MSFloatingViewManagerDynamicResizableViewOption) {
 @property (nonatomic) CGFloat floatingDistance;                                 // Default: headerView height.
 @property (nonatomic) CGFloat distanceAtTheTopOfScrollWhenHeaderViewHidden;     // Default: floatingDistance
 
-@property (nonatomic) BOOL floatingViewAnimation;                           // Default: YES
+@property (nonatomic) BOOL enableFloatingViewAnimation;                     // Default: YES
 @property (nonatomic) BOOL floatingViewAnimationOnlyTopOfScrollView;        // Default: NO
 @property (nonatomic) BOOL alphaEffectWhenHidding;                          // Default: NO
 
@@ -62,6 +62,10 @@ typedef NS_ENUM(NSInteger, MSFloatingViewManagerDynamicResizableViewOption) {
 
 #pragma mark - Initialize Methods
 - (id)initForScrollView:(UIScrollView *)scrollView headerView:(UIView *)headerView;
+
+#pragma mark - Inner Public Methods
+- (void)switchScrollView:(UIScrollView *)scrollView;
+- (void)resetSubviewsLayout;
 
 @end
 
@@ -95,7 +99,7 @@ typedef NS_ENUM(NSInteger, MSFloatingViewManagerDynamicResizableViewOption) {
         
         _lastContentOffset = UNDEFINED_OFFSET;
         
-        _floatingViewAnimation = YES;
+        _enableFloatingViewAnimation = YES;
         _floatingViewAnimationOnlyTopOfScrollView = NO;
         _alphaEffectWhenHidding = NO;
         _isScrollViewJustBeingDragging = NO;
@@ -105,7 +109,26 @@ typedef NS_ENUM(NSInteger, MSFloatingViewManagerDynamicResizableViewOption) {
 }
 
 
-#pragma mark - Private Methods Methods
+#pragma mark - Inner Public Methods
+
+- (void)switchScrollView:(UIScrollView *)scrollView
+{
+    _scrollView = scrollView;
+    _lastContentOffset = UNDEFINED_OFFSET;
+}
+
+- (void)resetSubviewsLayout
+{
+    _lastContentOffset = UNDEFINED_OFFSET;
+    
+    [_headerView setFrame:_originHeaderViewFrame];
+    [_headerView setAlpha:1.0f];
+    
+    [_dynamicResizableView setFrame:_originDynamicResizableViewFrame];
+}
+
+
+#pragma mark - Inner Private Methods
 
 - (void)moveFloatingViewsToFit
 {
@@ -113,7 +136,7 @@ typedef NS_ENUM(NSInteger, MSFloatingViewManagerDynamicResizableViewOption) {
         return;
     }
     
-    if (!_floatingViewAnimation) {
+    if (!_enableFloatingViewAnimation) {
         return;
     }
     
@@ -217,7 +240,7 @@ typedef NS_ENUM(NSInteger, MSFloatingViewManagerDynamicResizableViewOption) {
     }
     
     // if floatingViewAnimation turned off, return
-    if (!_floatingViewAnimation) {
+    if (!_enableFloatingViewAnimation) {
         return;
     }
     
@@ -283,11 +306,6 @@ typedef NS_ENUM(NSInteger, MSFloatingViewManagerDynamicResizableViewOption) {
 
 
 #pragma mark - Setty, Getty Methods
-
-- (void)setFloatingOption:(MSFloatingViewManagerFloatingOption)floatingOption
-{
-    _floatingOption = floatingOption;
-}
 
 - (void)setDynamicResizableView:(UIView *)dynamicResizableView
 {
@@ -355,6 +373,18 @@ static NSMutableDictionary *swizzlingKeyDictionary;
 - (void)dealloc
 {
     [[self callingObjectDictionary] removeObjectForKey:_callingObjectAddress];
+}
+
+#pragma mark - Public Methods
+
+- (void)switchScrollView:(UIScrollView *)scrollView
+{
+    [_floatingViewManagerCore switchScrollView:scrollView];
+}
+
+- (void)resetSubviewsLayout
+{
+    [_floatingViewManagerCore resetSubviewsLayout];
 }
 
 
@@ -575,5 +605,16 @@ static NSMutableDictionary *swizzlingKeyDictionary;
 {
     [_floatingViewManagerCore setFloatingDistance:floatingDistance];
 }
+
+- (void)setEnableFloatingViewAnimation:(BOOL)enableFloatingViewAnimation
+{
+    [_floatingViewManagerCore setEnableFloatingViewAnimation:enableFloatingViewAnimation];
+}
+
+- (void)setAlphaEffectWhenHidding:(BOOL)alphaEffectWhenHidding
+{
+    [_floatingViewManagerCore setAlphaEffectWhenHidding:alphaEffectWhenHidding];
+}
+
 
 @end
