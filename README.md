@@ -5,12 +5,19 @@ This is super simple module that you can control your headerView floated.
 The only thing your need is initialize MSFloatingViewManager and that's all.
 
 ```
-  \@property(nonatomic, strong) MSFloatingViewManager \*floatingViewManager;
+  @property(nonatomic, strong) MSFloatingViewManager *floatingViewManager;
 
   ...
-  // in 'viewDidLoad' Methods
-  \_floatingViewManager = [[MSFloatingViewManager alloc] initWithCallingObject:self scrollView:scrollView headerView:headerView];
+  // in somewhere usually in 'viewDidLoad'
+  _floatingViewManager = [[MSFloatingViewManager alloc] initWithCallingObject:self scrollView:scrollView headerView:headerView];
   ...
 ```
 
 # Options
+There are 3 options.
+
+1. floatingDistance
+
+2. enableFloatingViewAnimation
+
+3. alphaEffectWhenHidding
