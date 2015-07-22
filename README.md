@@ -1,6 +1,9 @@
 # MSFloatingViewManager
 This is super simple module that you can control your headerView floated.
 
+!()[https://github.com/ahimahas/MSFloatingViewManager/blob/master/Images/example.gif?raw=true]
+
+
 # How to Get Started
 The only thing your need is initialize MSFloatingViewManager and that's all.
 
