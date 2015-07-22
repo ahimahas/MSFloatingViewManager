@@ -17,7 +17,7 @@ The only thing your need is initialize MSFloatingViewManager and that's all.
 There are 3 options.
 
 1. floatingDistance<br>
-  ![](https://github.com/ahimahas/MSFloatingViewManager/blob/master/Images/halfDistance.gif?raw=true)
+
 2. enableFloatingViewAnimation
 
 3. alphaEffectWhenHidding
