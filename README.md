@@ -16,8 +16,11 @@ The only thing your need is initialize MSFloatingViewManager and that's all.
 # Options
 There are 3 options.
 
-1. floatingDistance
+1. floatingDistance<br>
 
 2. enableFloatingViewAnimation
 
 3. alphaEffectWhenHidding
+
+
+
